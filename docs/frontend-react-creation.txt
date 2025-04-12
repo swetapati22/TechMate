@@ -1,0 +1,47 @@
+D:\Education\learnwithgrandpa>cd TechMate
+
+D:\Education\learnwithgrandpa\TechMate>git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+
+D:\Education\learnwithgrandpa\TechMate>node -v
+v22.14.0
+
+D:\Education\learnwithgrandpa\TechMate>git checkout -b creating-react
+Switched to a new branch 'creating-react'
+
+D:\Education\learnwithgrandpa\TechMate>git status
+On branch creating-react
+nothing to commit, working tree clean
+
+D:\Education\learnwithgrandpa\TechMate>npm create vite@latest
+Need to install the following packages:
+create-vite@6.3.1
+Ok to proceed? (y) y
+
+
+> npx
+> cva
+
+│
+◇  Project name:
+│  frontend
+│
+◇  Select a framework:
+│  React
+│
+◇  Select a variant:
+│  TypeScript
+│
+◇  Scaffolding project in D:\Education\learnwithgrandpa\TechMate\frontend...
+│
+└  Done. Now run:
+
+  cd frontend
+  npm install
+  npm run dev
+
+
+D:\Education\learnwithgrandpa\TechMate>
