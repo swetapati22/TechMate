@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { getDoc } from 'firebase/firestore'; // Add this import
 
 function Login() {
 //   const [email, setEmail] = useState('');
@@ -24,7 +25,15 @@ const [password, setPassword] = useState('password123');
       // Try to sign in
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('Login success:', userCredential.user.uid);
-      navigate('/dashboard');
+
+      // navigate('/dashboard');
+
+      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+      const role = userDoc.exists() ? userDoc.data().role : 'elder';
+
+      // Navigate based on role
+      navigate(role === 'grandkid' ? '/Grandkid_View' : '/dashboard');
+
     } catch (error: any) {
       if (error.code === 'auth/user-not-found') {
         try {
@@ -39,7 +48,7 @@ const [password, setPassword] = useState('password123');
             role: isElder ? 'elder' : 'grandkid',
             email: email
           });
-          navigate('/dashboard');
+          navigate(isElder ? '/dashboard' : '/Grandkid_View');
         } catch (signupError: any) {
           console.error('Login error:', error);
           setError(`Signup failed: ${signupError.message}`);
