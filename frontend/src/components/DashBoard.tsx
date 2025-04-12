@@ -1,4 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 function DashBoard() {
+
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
   return (
       <div className="container py-5">
         <h1 className="text-center mb-5 display-5">Welcome! Tap a mode to begin</h1>
@@ -7,7 +15,7 @@ function DashBoard() {
           <div
             className="card text-center shadow-lg w-100 p-4"
             style={{ maxWidth: '600px', minHeight: '200px', cursor: 'pointer' }}
-            //onClick={() => handleNavigation('/ezmode')}
+            onClick={() => handleNavigation('/ezmode')}
             role="button"
           >
             <div className="card-body">
@@ -20,7 +28,7 @@ function DashBoard() {
           <div
             className="card text-center shadow-lg w-100 p-4"
             style={{ maxWidth: '600px', minHeight: '200px', cursor: 'pointer' }}
-            //onClick={() => handleNavigation('/ask-grandkid')}
+            onClick={() => handleNavigation('/ask-grandkid')}
             role="button"
           >
             <div className="card-body">
@@ -33,7 +41,7 @@ function DashBoard() {
           <div
             className="card text-center shadow-lg w-100 p-4"
             style={{ maxWidth: '600px', minHeight: '200px', cursor: 'pointer' }}
-            //onClick={() => handleNavigation('/taptutor')}
+            onClick={() => handleNavigation('/taptutor')}
             role="button"
           >
             <div className="card-body">
