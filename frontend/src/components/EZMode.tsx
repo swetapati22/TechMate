@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSpeechSynthesis } from 'react-speech-kit';
+import { Question } from '../interfaces/Question';
 
 const EZMode: React.FC = () => {
   const [typedQuestion, setTypedQuestion] = useState('');
@@ -48,8 +50,23 @@ const EZMode: React.FC = () => {
     speak({ text: mockResponse.join('. ') });
   };
 
+  const navigate = useNavigate();
+
+  const handleSend = () => {
+    const mockData: Question = {
+      id: '1001',
+      device: 'Tablet',
+      question: 'How to send an email?',
+      answer: null,
+      video: null,
+      isResolved: false,
+    };
+
+    navigate('/ask-grandkid', { state: { newQuestion: mockData } });
+  };
+
   return (
-    <div className="container py-5">
+    <><div className="container py-5">
       <h1 className="text-center mb-5 display-4">🎙️ EZMode – Ask a Question</h1>
 
       <div className="row mb-4">
@@ -60,8 +77,7 @@ const EZMode: React.FC = () => {
             rows={3}
             value={typedQuestion}
             onChange={(e) => setTypedQuestion(e.target.value)}
-            placeholder="Type your question here..."
-          />
+            placeholder="Type your question here..." />
         </div>
 
         <div className="col-md-6 mb-3">
@@ -93,7 +109,12 @@ const EZMode: React.FC = () => {
           </ol>
         </div>
       )}
-    </div>
+    </div><div className="container mt-5">
+        <h3>EZMode – Ask a Question</h3>
+        <button onClick={handleSend}>
+          Send Mock Question to Grandkid ➡️
+        </button>
+      </div></>
   );
 };
 
