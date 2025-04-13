@@ -5,8 +5,10 @@ import iosLogo from '../assets/IOS_logo.png';
 import phoneImg from '../assets/phone.jpg';
 import tabletImg from '../assets/tablet.jpg';
 import laptopImg from '../assets/laptop.jpeg';
+import { getAuth } from 'firebase/auth';
 import './EZMode.css';
 import { saveLLMFeedback } from '../utils/saveLLMFeedback';
+
 
 const EZMode = () => {
   const [userEmail, setUserEmail] = useState('');
@@ -24,9 +26,19 @@ const EZMode = () => {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    // Firebase auth logic
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    if (user && user.email) {
+      setUserEmail(user.email);
+    }
+  
+    // Scroll-to-bottom logic when conversation updates
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversation, loading]);
-
+  
+  }, [conversation, loading]); // still depends on these
+  
   const startListening = () => {
     const recognition = new (window as any).webkitSpeechRecognition();
     recognition.lang = 'en-US';
