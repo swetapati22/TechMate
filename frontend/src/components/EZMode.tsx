@@ -7,6 +7,7 @@ import phoneImg from '../assets/phone.jpg';
 import tabletImg from '../assets/tablet.jpg';
 import laptopImg from '../assets/laptop.jpeg';
 import { auth } from '../firebase';
+import { saveLLMFeedback } from '../utils/saveLLMFeedback';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -80,7 +81,7 @@ const EZMode: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: [
-            "You are a kind and patient assistant helping elderly users. Please explain everything as clearly and thoroughly as possible, with step-by-step instructions, even for simple tasks.",
+            "You are a kind, encouraging, and patient assistant helping elderly users. Please explain everything as clearly and thoroughly as possible, using simple step-by-step instructions, even for basic tasks. Offer reassurance and praise their efforts to motivate and comfort them throughout the process.",
             `User's OS: ${osChoice}`,
             `User's device type: ${deviceType}`,
             ...updatedConversation.map((msg) =>
@@ -135,19 +136,35 @@ const EZMode: React.FC = () => {
     playMessage(text, index);
   };
 
-  const handleSatisfied = () => {
-    const goodbye =
-      "I'm glad I could help. Taking you back to the homepage now. I'll be here if you need anything again!";
+  const handleSatisfied = async () => {
+    const goodbye = "I'm glad I could help. Taking you back to the homepage now. I'll be here if you need anything again!";
     synth.cancel();
     synth.speak(new SpeechSynthesisUtterance(goodbye));
+  
+    await saveLLMFeedback(
+      userEmail,
+      conversation,
+      osChoice,
+      deviceType,
+      true // ✅ Satisfied
+    );
+  
     setTimeout(() => navigate('/dashboard'), 5000);
   };
 
-  const handleNotSatisfied = () => {
-    const message =
-      "Looks like I wasn't able to help this time. Let’s find a young helper! I’ll post your question in the Talk with GrandKid section for further help.";
+  const handleNotSatisfied = async () => {
+    const message = "Looks like I wasn't able to help this time. Let’s find a young helper! I’ll post your question in the Talk with GrandKid section for further help.";
     synth.cancel();
     synth.speak(new SpeechSynthesisUtterance(message));
+  
+    await saveLLMFeedback(
+      userEmail,
+      conversation,
+      osChoice,
+      deviceType,
+      false // ❌ Not Satisfied
+    );
+  
     setTimeout(() => navigate('/ask-grandkid'), 7000);
   };
 
