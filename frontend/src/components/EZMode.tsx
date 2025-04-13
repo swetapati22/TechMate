@@ -1,41 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useSpeechSynthesis } from 'react-speech-kit';
 import { useNavigate } from 'react-router-dom';
 import androidLogo from '../assets/android_logo.png';
 import iosLogo from '../assets/IOS_logo.png';
 import phoneImg from '../assets/phone.jpg';
 import tabletImg from '../assets/tablet.jpg';
 import laptopImg from '../assets/laptop.jpeg';
-import { auth } from '../firebase';
+import './EZMode.css';
 import { saveLLMFeedback } from '../utils/saveLLMFeedback';
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-const EZMode: React.FC = () => {
+const EZMode = () => {
   const [userEmail, setUserEmail] = useState('');
-
-  useEffect(() => {
-    if (auth.currentUser) {
-      setUserEmail(auth.currentUser.email || '');
-    }
-  }, []);
-
-
   const [typedQuestion, setTypedQuestion] = useState('');
-  const [voiceText, setVoiceText] = useState('');
-  const [conversation, setConversation] = useState<Message[]>([]);
+  const [conversation, setConversation] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [osChoice, setOsChoice] = useState<string | null>(null);
-  const [deviceType, setDeviceType] = useState<string | null>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const [osChoice, setOsChoice] = useState(null);
+  const [deviceType, setDeviceType] = useState(null);
+  const chatEndRef = useRef(null);
   const navigate = useNavigate();
 
   const synth = window.speechSynthesis;
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
+  const utteranceRef = useRef(null);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
@@ -49,7 +34,7 @@ const EZMode: React.FC = () => {
 
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
-      setVoiceText(transcript);
+      setTypedQuestion(transcript);
     };
 
     recognition.onerror = (event: any) => {
@@ -60,19 +45,17 @@ const EZMode: React.FC = () => {
   };
 
   const handleSendMessage = async () => {
-    const userInput = typedQuestion || voiceText;
-    if (!userInput.trim()) {
+    if (!typedQuestion.trim()) {
       alert('Please type or speak your question.');
       return;
     }
 
     const updatedConversation = [
       ...conversation,
-      { role: 'user', content: userInput },
+      { role: 'user', content: typedQuestion },
     ];
     setConversation(updatedConversation);
     setTypedQuestion('');
-    setVoiceText('');
     setLoading(true);
 
     try {
@@ -98,8 +81,7 @@ const EZMode: React.FC = () => {
       const assistantMessage = { role: 'assistant', content: assistantReply };
       setConversation((prev) => [...prev, assistantMessage]);
       setLoading(false);
-      const index = updatedConversation.length;
-      playMessage(assistantReply, index);
+      playMessage(assistantReply, updatedConversation.length);
     } catch (error) {
       console.error('LLM Error:', error);
       alert('Assistant failed to respond.');
@@ -111,12 +93,10 @@ const EZMode: React.FC = () => {
     synth.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utteranceRef.current = utter;
-
     utter.onend = () => {
       setSpeakingIndex(null);
       setIsPaused(false);
     };
-
     synth.speak(utter);
     setSpeakingIndex(index);
     setIsPaused(false);
@@ -140,15 +120,8 @@ const EZMode: React.FC = () => {
     const goodbye = "I'm glad I could help. Taking you back to the homepage now. I'll be here if you need anything again!";
     synth.cancel();
     synth.speak(new SpeechSynthesisUtterance(goodbye));
-  
-    await saveLLMFeedback(
-      userEmail,
-      conversation,
-      osChoice,
-      deviceType,
-      true // ✅ Satisfied
-    );
-  
+
+    await saveLLMFeedback(userEmail, conversation, osChoice, deviceType, true);
     setTimeout(() => navigate('/dashboard'), 5000);
   };
 
@@ -156,170 +129,108 @@ const EZMode: React.FC = () => {
     const message = "Looks like I wasn't able to help this time. Let’s find a young helper! I’ll post your question in the Talk with GrandKid section for further help.";
     synth.cancel();
     synth.speak(new SpeechSynthesisUtterance(message));
-  
-    await saveLLMFeedback(
-      userEmail,
-      conversation,
-      osChoice,
-      deviceType,
-      false // ❌ Not Satisfied
-    );
-  
+
+    await saveLLMFeedback(userEmail, conversation, osChoice, deviceType, false);
     setTimeout(() => navigate('/ask-grandkid'), 7000);
   };
 
-  const showFeedbackButtons =
-    conversation.length > 0 && conversation[conversation.length - 1].role === 'assistant';
+  const showFeedbackButtons = conversation.length > 0 && conversation[conversation.length - 1].role === 'assistant';
 
   return (
-    <><div>
-      <h2>Welcome, {userEmail}</h2>
-    </div>
-    <div className="container py-5">
-        <h1 className="text-center mb-5 display-4">🎙️ EZMode – Ask a Question</h1>
+    <div className="ezmode-container">
+      {deviceType && (
+        <div className="user-header">
+          <h2>Welcome, {userEmail}</h2>
+        </div>
+      )}
 
+      <div className="main-content">
         {!osChoice ? (
-          <>
-            <p className="text-center fs-2 fw-bold mb-4">Which operating system are you using?</p>
-            <div className="d-flex justify-content-center gap-5">
-              <button className="border-0 bg-transparent" onClick={() => setOsChoice('Android')}>
-                <img src={androidLogo} alt="Android" style={{ width: '180px', height: '120px', objectFit: 'contain', borderRadius: '12px', border: '2px solid #ccc' }} />
-                <div className="text-center mt-2 fs-5 fw-semibold">Android</div>
+          <div className="selection-screen">
+            <p className="selection-prompt">📱 Which operating system are you using?</p>
+            <div className="os-grid">
+              <button className="device-card" onClick={() => setOsChoice('Android')}>
+                <img src={androidLogo} alt="Android" className="os-image" />
+                <div className="device-label">Android</div>
               </button>
-              <button className="border-0 bg-transparent" onClick={() => setOsChoice('iOS')}>
-                <img src={iosLogo} alt="iOS" style={{ width: '180px', height: '120px', objectFit: 'contain', borderRadius: '12px', border: '2px solid #ccc' }} />
-                <div className="text-center mt-2 fs-5 fw-semibold">iOS</div>
+              <button className="device-card" onClick={() => setOsChoice('iOS')}>
+                <img src={iosLogo} alt="iOS" className="os-image" />
+                <div className="device-label">iOS</div>
               </button>
             </div>
-          </>
+          </div>
         ) : !deviceType ? (
-          <>
-            <p className="text-center fs-2 fw-bold mb-4">What kind of device are you using?</p>
-            <div className="d-flex justify-content-center gap-5">
-              <button className="border-0 bg-transparent" onClick={() => setDeviceType('Phone')}>
-                <img src={phoneImg} alt="Phone" style={{ width: '180px', height: '120px', objectFit: 'cover', borderRadius: '12px', border: '2px solid #ccc' }} />
-                <div className="text-center mt-2 fs-5 fw-semibold">Phone</div>
-              </button>
-              <button className="border-0 bg-transparent" onClick={() => setDeviceType('Tablet')}>
-                <img src={tabletImg} alt="Tablet" style={{ width: '180px', height: '120px', objectFit: 'cover', borderRadius: '12px', border: '2px solid #ccc' }} />
-                <div className="text-center mt-2 fs-5 fw-semibold">Tablet</div>
-              </button>
-              <button className="border-0 bg-transparent" onClick={() => setDeviceType('Computer')}>
-                <img src={laptopImg} alt="Computer" style={{ width: '180px', height: '120px', objectFit: 'cover', borderRadius: '12px', border: '2px solid #ccc' }} />
-                <div className="text-center mt-2 fs-5 fw-semibold">Computer</div>
-              </button>
+          <div className="selection-screen">
+            <p className="selection-prompt">📲 What kind of device are you using?</p>
+            <div className="device-grid">
+              {['Phone', 'Tablet', 'Computer'].map((device) => (
+                <button key={device} className="device-card" onClick={() => setDeviceType(device)}>
+                  <img
+                    src={device === 'Phone' ? phoneImg : device === 'Tablet' ? tabletImg : laptopImg}
+                    alt={device}
+                    className="device-image"
+                  />
+                  <div className="device-label">{device}</div>
+                </button>
+              ))}
             </div>
-          </>
+          </div>
         ) : (
           <>
-            <div className="row mb-4">
-              <div className="col-md-6 mb-3">
-                <label className="form-label fs-5">📝 Type your question</label>
-                <textarea
-                  className="form-control fs-4"
-                  rows={3}
-                  value={typedQuestion}
-                  onChange={(e) => setTypedQuestion(e.target.value)}
-                  placeholder="Type your question here..." />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label className="form-label fs-5">🎤 Or speak your question</label>
-                <button className="btn btn-lg btn-warning mb-3" onClick={startListening}>
-                  🎙️ Start Listening
-                </button>
-                <div className="border rounded p-3 bg-light fs-4">
-                  <strong>Transcribed:</strong> {voiceText || 'Nothing yet...'}
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center mb-4">
-              <button
-                className="btn btn-success btn-lg px-5 fs-4"
-                onClick={handleSendMessage}
-                disabled={loading}
-              >
-                {loading ? '⏳ Thinking...' : 'Get Help'}
-              </button>
-            </div>
-
-            <div
-              className="border rounded p-4 bg-white"
-              style={{ maxHeight: '400px', overflowY: 'auto' }}
-            >
-              <h4 className="mb-3">💬 Assistant Conversation</h4>
-
-              {conversation.map((msg, index) => (
-                <div key={index} className="mb-3">
-                  <span className={`fw-bold ${msg.role === 'user' ? 'text-primary' : 'text-success'}`}>
-                    {msg.role === 'user' ? '🧓 You' : '🤖 Assistant'}:
-                  </span>
-                  <p className="mb-1 fs-5 d-flex justify-content-between align-items-center">
-                    <span
-                      className={`p-2 rounded ${msg.role === 'user' ? 'bg-primary-subtle text-dark' : 'bg-success-subtle text-dark'}`}
-                      style={{ whiteSpace: 'pre-line', flex: 1 }}
-                    >
-                      {msg.content}
-                    </span>
+            <div className="conversation-window">
+              <h4 className="conversation-title">💬 Assistant Conversation</h4>
+              <div className="chat-scroll-container">
+                {conversation.map((msg, index) => (
+                  <div key={index} className={`message-container ${msg.role}-message`}>
+                    <div className="message-header">
+                      {msg.role === 'user' ? '🧓 You' : '🤖 Assistant'}
+                    </div>
+                    <div className="message-content">
+                      {msg.content.split('\n').map((line, i) => (
+                        <p key={i} className="instruction-step">{line}</p>
+                      ))}
+                    </div>
                     {msg.role === 'assistant' && (
-                      <div className="ms-3 d-flex flex-column align-items-end">
-                        {speakingIndex === index && !isPaused && (
-                          <button
-                            className="btn btn-sm btn-outline-secondary mb-1"
-                            onClick={handlePause}
-                          >
-                            ⏸ Pause
-                          </button>
+                      <div className="voice-controls">
+                        {speakingIndex === index && (
+                          !isPaused ? (
+                            <button className="voice-control-btn" onClick={handlePause}>⏸ Pause</button>
+                          ) : (
+                            <button className="voice-control-btn" onClick={handleResume}>▶️ Resume</button>
+                          )
                         )}
-                        {speakingIndex === index && isPaused && (
-                          <button
-                            className="btn btn-sm btn-outline-secondary mb-1"
-                            onClick={handleResume}
-                          >
-                            ▶️ Resume
-                          </button>
-                        )}
-                        <button
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => handleReplay(msg.content, index)}
-                        >
-                          🔁 Replay
-                        </button>
+                        <button className="voice-control-btn" onClick={() => handleReplay(msg.content, index)}>🔁 Replay</button>
                       </div>
                     )}
-                  </p>
-                </div>
-              ))}
+                  </div>
+                ))}
+                <div ref={chatEndRef} />
+              </div>
 
-              {loading && (
-                <div className="mb-3">
-                  <span className="fw-bold text-success">🤖 Assistant:</span>
-                  <span className="typing-dots fs-5 ms-2">
-                    Thinking<span className="dot">.</span>
-                    <span className="dot">.</span>
-                    <span className="dot">.</span>
-                  </span>
+              <div className="input-area">
+                <input
+                  type="text"
+                  placeholder="Type your question..."
+                  value={typedQuestion}
+                  onChange={(e) => setTypedQuestion(e.target.value)}
+                />
+                <button onClick={handleSendMessage}>📤 Send</button>
+                <button onClick={startListening}>🎤 Speak</button>
+              </div>
+
+              {loading && <p className="loading-msg">⏳ Thinking...</p>}
+
+              {showFeedbackButtons && (
+                <div className="feedback-buttons">
+                  <button onClick={handleSatisfied}>😊 Yes, it helped</button>
+                  <button onClick={handleNotSatisfied}>😕 Not really</button>
                 </div>
               )}
-
-              <div ref={chatEndRef} />
             </div>
-
-            {showFeedbackButtons && (
-              <div className="text-center mt-4">
-                <p className="fs-5 fw-semibold">Were you satisfied with the help?</p>
-                <button className="btn btn-success btn-lg me-3" onClick={handleSatisfied}>
-                  ✅ Satisfied
-                </button>
-                <button className="btn btn-danger btn-lg" onClick={handleNotSatisfied}>
-                  ❌ Not Satisfied
-                </button>
-              </div>
-            )}
           </>
         )}
-      </div></>
+      </div>
+    </div>
   );
 };
 

@@ -1,0 +1,378 @@
+:root {
+  --primary: #FFA726;       /* Light orange */
+  --secondary: #FB8C00;     /* Darker orange */
+  --accent: #FFB74D;
+  --success: #4CAF50;
+  --warning: #FF9800;
+  --error: #EF5350;
+  --background: #FFF3E0;
+}
+
+/* Base Container */
+.ezmode-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-size: 1.2rem;
+  background: var(--background);
+  min-height: 100vh;
+}
+
+/* Selection Screens */
+.selection-screen {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  margin: 2rem 0;
+  border: 3px solid var(--primary);
+}
+
+.selection-prompt {
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  color: var(--primary);
+  text-shadow: 2px 2px 4px rgba(255, 167, 38, 0.1);
+}
+
+.os-grid, .device-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  padding: 2rem;
+}
+
+.device-card {
+  background: #FFF3E0;
+  border-radius: 15px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid var(--primary);
+}
+
+.device-card:hover {
+  transform: scale(1.05);
+  background: #FFE0B2;
+}
+
+.os-image, .device-image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border: 3px solid var(--primary);
+  border-radius: 15px;
+  padding: 1rem;
+  background: white;
+}
+
+.device-label {
+  font-size: 1.8rem;
+  margin-top: 1.5rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Chat Interface */
+.chat-interface {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.chat-scroll-container {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
+  scroll-behavior: smooth;
+}
+
+.user-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border-radius: 15px;
+}
+
+.chat-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.input-label {
+  font-size: 1.3rem;
+  color: var(--primary);
+  min-width: 160px;
+}
+
+/* Add to EZMode.css */
+.input-area {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--primary);
+  border-radius: 30px;
+  font-size: 1.2rem;
+  min-height: 60px;
+}
+
+.input-area button {
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-size: 1.3rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-area button:first-of-type { /* Send button */
+  background: var(--success);
+  color: white;
+}
+
+.input-area button:last-of-type { /* Speak button */
+  background: var(--primary);
+  color: white;
+  padding: 1rem 1.8rem;
+}
+
+.input-area button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.input-area button:active {
+  transform: scale(0.98);
+}
+
+.loading-msg {
+  text-align: center;
+  color: var(--primary);
+  font-size: 1.4rem;
+  margin: 1.5rem 0;
+}
+
+.text-input {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid var(--primary);
+  border-radius: 25px;
+  font-size: 1.2rem;
+  min-height: 50px;
+  resize: vertical;
+}
+
+.voice-button {
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.voice-button:hover {
+  transform: scale(1.1);
+  background: var(--secondary);
+}
+
+.submit-button {
+  align-self: flex-end;
+  border-radius: 25px;
+  padding: 0.8rem 2rem;
+  font-size: 1.2rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.submit-button:hover {
+  background: var(--secondary);
+  transform: scale(1.05);
+}
+
+.transcription-box {
+  padding: 1rem;
+  background: #FFF8E1;
+  border-radius: 10px;
+  border: 1px solid var(--primary);
+}
+
+.conversation-window {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 1.5rem;
+  min-height: 400px;
+}
+
+.message-container {
+  max-width: 70%;
+  margin: 1rem 0;
+  padding: 1rem 1.5rem;
+  border-radius: 25px;
+}
+
+.user-message {
+  margin-left: auto;
+  background: var(--primary);
+  color: white;
+}
+
+.assistant-message {
+  background: #e8f5e9;
+  color: #2d3436;
+}
+
+.message-header {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  opacity: 0.8;
+}
+
+.voice-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.voice-control-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  color: inherit;
+}
+
+/* Feedback Section */
+.feedback-section {
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 15px;
+}
+
+/* Typing Animation */
+.typing-indicator {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: dot-bounce 1.4s infinite;
+}
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-15px); }
+}
+
+/* NEW: Chat Input Buttons Styling */
+.chat-input-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.chat-input-buttons button {
+  font-size: 1.2rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  border: 2px solid var(--primary);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chat-input-buttons button:hover {
+  background: var(--secondary);
+  transform: scale(1.05);
+}
+
+/* NEW: Feedback Buttons Styling */
+.feedback-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.feedback-buttons button {
+  font-size: 1.4rem;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  border: none;
+  background: var(--success);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.feedback-buttons button:nth-child(2) {
+  background: var(--error);
+}
+
+.feedback-buttons button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* NEW: Send and Speak Buttons Styling */
+.send-speak-buttons {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.send-speak-buttons button {
+  font-size: 1.3rem;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.send-speak-buttons button:hover {
+  background: var(--secondary);
+  transform: scale(1.05);
+}
