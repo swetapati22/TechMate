@@ -1,58 +1,79 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
+import '../App.css';
 
 function DashBoard() {
-
+  const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      setUserEmail(auth.currentUser.email || '');
+    }
+  }, []);
 
   const handleNavigation = (path: string) => {
     navigate(path);
   };
+
   return (
-      <div className="container py-5">
-        <h1 className="text-center mb-5 display-5">Welcome! Tap a mode to begin</h1>
-  
-        <div className="d-flex flex-column gap-5 align-items-center">
+    <div className="dashboard-container">
+      {/* Navbar */}
+      <nav className="senior-navbar">
+        <div className="navbar-content text-center">
+          <span className="welcome-message">Welcome ! Tap a mode to begin 👇</span>
+        </div>
+      </nav>
+
+      <div className="dashboard-content">
+        <h1 className="text-center main-title">
+          
+        </h1>
+
+        <div className="cards-container">
+          {/* EZMode Card */}
           <div
-            className="card text-center shadow-lg w-100 p-4"
-            style={{ maxWidth: '600px', minHeight: '200px', cursor: 'pointer' }}
+            className="card animated-card slide-in-1"
             onClick={() => handleNavigation('/ezmode')}
             role="button"
           >
-            <div className="card-body">
-              <div style={{ fontSize: '4rem' }}>🎙️</div>
-              <h2 className="card-title mt-3 fw-bold">EZMode – Ask a Question</h2>
-              <p className="card-text fs-4">Talk and get help instantly</p>
+            <div className="card-body text-center">
+              <div className="emoji">🎙️</div>
+              <h2 className="card-title">EZMode – Ask a Question</h2>
+              <p className="card-text">Talk and get help instantly 🗣️</p>
             </div>
           </div>
-  
+
+          {/* Ask Grandkid Card */}
           <div
-            className="card text-center shadow-lg w-100 p-4"
-            style={{ maxWidth: '600px', minHeight: '200px', cursor: 'pointer' }}
+            className="card animated-card slide-in-2"
             onClick={() => handleNavigation('/ask-grandkid')}
             role="button"
           >
-            <div className="card-body">
-              <div style={{ fontSize: '4rem' }}>👨‍👩‍👧</div>
-              <h2 className="card-title mt-3 fw-bold">Ask Grandkid</h2>
-              <p className="card-text fs-4">Send your issue and get help from family</p>
+            <div className="card-body text-center">
+              <div className="emoji">👨‍👩‍👧</div>
+              <h2 className="card-title">Ask Grandkid</h2>
+              <p className="card-text">Send your issue to family 💬</p>
             </div>
           </div>
-  
+
+          {/* TapTutor Card */}
           <div
-            className="card text-center shadow-lg w-100 p-4"
-            style={{ maxWidth: '600px', minHeight: '200px', cursor: 'pointer' }}
+            className="card animated-card slide-in-3"
             onClick={() => handleNavigation('/taptutor')}
             role="button"
           >
-            <div className="card-body">
-              <div style={{ fontSize: '4rem' }}>📖</div>
-              <h2 className="card-title mt-3 fw-bold">TapTutor</h2>
-              <p className="card-text fs-4">Step-by-step tutorials for common tasks</p>
+            <div className="card-body text-center">
+              <div className="emoji">📖</div>
+              <h2 className="card-title">TapTutor</h2>
+              <p className="card-text">Step-by-step tutorials 🧠</p>
             </div>
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 }
 
 export default DashBoard;
