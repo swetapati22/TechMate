@@ -54,7 +54,7 @@ function DashBoard() {
             <div className="card-body text-center">
               <div className="emoji">👨‍👩‍👧</div>
               <h2 className="card-title">Ask Grandkid</h2>
-              <p className="card-text">Send your issue to family 💬</p>
+              <p className="card-text">Send your issue to grandkids around the globe 💬</p>
             </div>
           </div>
 
@@ -67,7 +67,7 @@ function DashBoard() {
             <div className="card-body text-center">
               <div className="emoji">📖</div>
               <h2 className="card-title">TapTutor</h2>
-              <p className="card-text">Step-by-step tutorials 🧠</p>
+              <p className="card-text">Common Issues: Step-by-step tutorials 🧠</p>
             </div>
           </div>
         </div>
