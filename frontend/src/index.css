@@ -66,3 +66,54 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* ----- TapTutor Enhancements ----- */
+
+.card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #444;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(100, 108, 255, 0.3);
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+iframe,
+.card-img-top {
+  border-radius: 8px;
+}
+
+/* Section headers like "📱 Mobile (Android)" */
+h2 {
+  font-size: 1.8em;
+  color: #99ccff;
+}
+
+/* Spinner text loading center fix */
+.fs-3 {
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  .card-img-top {
+    height: 160px;
+  }
+}
