@@ -64,9 +64,7 @@ npm run lint      # Run ESLint for code quality
 * Vite + ESLint + Bootstrap
 * React Speech Kit
 
----
-
-## [Live Demo](https://www.youtube.com/watch?v=OivQJb1afGA&t=1s)
+#### [Link to Live Demo](https://www.youtube.com/watch?v=OivQJb1afGA&t=1s)
 
 ---
 
